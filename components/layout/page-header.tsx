@@ -5,20 +5,27 @@ interface PageHeaderProps {
   subtitle?: string;
   imageSrc: string;
   imageAlt?: string;
+  overlap?: number;
 }
 
-export function PageHeader({ 
-  title, 
-  subtitle, 
-  imageSrc, 
-  imageAlt = "Page header image" 
+export function PageHeader({
+  title,
+  subtitle,
+  imageSrc,
+  imageAlt = "Page header image",
+  overlap = 60,
 }: PageHeaderProps) {
   return (
-    <div className="w-full bg-[#1A1A1A] px-6 py-12 md:px-30">
-      <div className="mx-auto max-w-[1440px]">
-        {/* Rounded Image Banner */}
-        <div className="relative h-[350px] w-full overflow-hidden rounded-[40px] md:h-[450px]">
-          {/* Background Image */}
+    <div className="relative w-full">
+      {/* Dark background */}
+      <div className="w-full bg-[#1A1A1A] px-6 md:px-30" style={{ height: '280px' }} />
+
+      {/* Banner card — positioned to overlap */}
+      <div
+        className="absolute right-0 left-0 px-6 md:px-30"
+        style={{ top: '24px', bottom: `-${overlap}px` }}
+      >
+        <div className="relative mx-auto h-full max-w-[1440px] overflow-hidden rounded-[40px]">
           <Image
             src={imageSrc}
             alt={imageAlt}
@@ -26,11 +33,7 @@ export function PageHeader({
             className="object-cover"
             priority
           />
-          
-          {/* Overlay for better text readability */}
           <div className="absolute inset-0 bg-black/30" />
-          
-          {/* Title and Subtitle */}
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
             <h1 className="text-[48px] font-bold text-white md:text-[64px]">
               {title}
@@ -43,6 +46,9 @@ export function PageHeader({
           </div>
         </div>
       </div>
+
+      {/* Spacer to push content down accounting for banner height + overlap */}
+      <div style={{ height: '250px' }} />
     </div>
   );
 }

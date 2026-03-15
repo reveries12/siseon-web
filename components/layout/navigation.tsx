@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
@@ -14,10 +15,11 @@ const navItems: NavItem[] = [
   {
     title: "복음",
     href: "#",
-    subItems: [
+     subItems: [
       { title: "복음의 내용", href: "/gospel/content" },
       { title: "신앙고백", href: "/gospel/confession" },
       { title: "설교", href: "/gospel/sermons" },
+      { title: "어린이예배", href: "/gospel/children" },
     ],
   },
   {
@@ -49,59 +51,81 @@ export function Navigation() {
 
   return (
     <>
-      {/* Desktop Navigation Container */}
-      <div
-        className="relative hidden w-[50%] md:block"
+      {/* Header + Dropdown as one unit */}
+      <header
+        className="relative z-50 w-full bg-[#1A1A1A]"
         onMouseEnter={() => setIsMenuOpen(true)}
         onMouseLeave={() => setIsMenuOpen(false)}
       >
-        {/* Nav items container - titles evenly spaced */}
-        <nav className="flex w-full justify-start gap-24">
-          {navItems.map((item, index) => (
-            <div
-              key={item.title}
-              className="relative flex-1" // Add relative here
-            >
-              <div className="cursor-pointer py-2 text-[26px] font-bold whitespace-nowrap text-white">
-                {item.title}
-              </div>
+        {/* Main header row */}
+        <div className="flex h-[100px] w-full items-center px-6 md:h-[180px] md:px-30">
+          <div className="mx-auto flex w-full items-center justify-between md:max-w-[1440px]">
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-2">
+              <Image
+                src="/logo/logo.svg"
+                alt="logo"
+                className="w-[40px] md:size-[114px]"
+                width={80}
+                height={80}
+              />
+              <Image
+                src="/logo/logo-title.svg"
+                alt="logo"
+                className="w-[96px] md:size-[197px]"
+                width={197}
+                height={82}
+              />
+            </Link>
 
-              {/* Dropdown directly under this title */}
-              <div
-                className={`absolute top-full left-0 pt-6 transition-all duration-300 ${
-                  isMenuOpen
-                    ? "visible opacity-100"
-                    : "pointer-events-none invisible opacity-0"
-                }`}
-              >
-                <div className="space-y-3">
-                  {item.subItems?.map((subItem) => (
-                    <Link
-                      key={subItem.title}
-                      href={subItem.href}
-                      className={`block text-[22px] whitespace-nowrap transition-colors duration-200 ${
-                        pathname === subItem.href
-                          ? "text-white underline"
-                          : "text-gray-400 hover:text-white hover:underline"
-                      }`}
-                    >
-                      {subItem.title}
-                    </Link>
-                  ))}
+            {/* Desktop nav titles */}
+            <nav className="hidden justify-end gap-16 md:flex">
+              {navItems.map((item) => (
+                <div key={item.title} className="w-[200px]">
+                  <div className="cursor-pointer text-[26px] font-bold whitespace-nowrap text-white">
+                    {item.title}
+                  </div>
                 </div>
-              </div>
-            </div>
-          ))}
-        </nav>
-      </div>
+              ))}
+            </nav>
 
-      {/* Mobile Menu Button */}
-      <button
-        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        className="z-50 text-white md:hidden"
-      >
-        {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-      </button>
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="z-50 text-white md:hidden"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
+        </div>
+
+        {/* Submenu — floats over content */}
+        <div
+          className={`absolute top-full left-0 w-full overflow-hidden bg-[#1A1A1A] transition-all duration-300 ease-in-out ${
+            isMenuOpen ? "max-h-64 opacity-100" : "max-h-0 opacity-0"
+          }`}
+        >
+          <div className="mx-auto flex w-full justify-end gap-16 px-6 pb-8 md:max-w-[1440px] md:px-30">
+            {navItems.map((item) => (
+              <div key={item.title} className="w-[200px] space-y-3">
+                {item.subItems?.map((subItem) => (
+                  <Link
+                    key={subItem.title}
+                    href={subItem.href}
+                    className={`block text-[18px] whitespace-nowrap transition-colors duration-200 ${
+                      pathname === subItem.href
+                        ? "text-white underline"
+                        : "text-gray-400 hover:text-white hover:underline"
+                    }`}
+                  >
+                    {subItem.title}
+                  </Link>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      </header>
 
       {/* Mobile Navigation */}
       <div
